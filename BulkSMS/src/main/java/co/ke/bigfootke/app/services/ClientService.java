@@ -123,9 +123,13 @@ public class ClientService implements ClientRepository{
 	}
 
 	@Override
-	public Client findById(Long scheduleId) {
+	public Client findById(Long clientId) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public String findByGroup(List<Long> groupsIds) {
+		return repository.findByGroup(groupsIds);
 	}
 
 	@Override

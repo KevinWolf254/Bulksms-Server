@@ -16,6 +16,8 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +41,7 @@ public class GroupRepositoryImpl implements GroupRepository{
 	
 	private Map<String, String> response;
 	private List<Object> responseList;
+	private static final Logger log = LoggerFactory.getLogger(GroupRepositoryImpl.class);
 		
 	@SuppressWarnings("unchecked")
 	public List<Group> findAll() {
@@ -311,11 +314,13 @@ public class GroupRepositoryImpl implements GroupRepository{
 				}else {
 					for(Long groupId: groupIds) {
 						response = new HashMap<>();
-						group = findById(groupId, session);					
+						group = findById(groupId,session);					
 						if(group == null) {
 							response.put("message", "Error: Group ID: "+groupId+" is none-existant ");
+					        log.info("**************  ERROR: COULD NOT RETRIEVE GROUP WITH ID: "+groupId+"  ********************");
 							responseList.add(response);
 						}else {
+					        log.info("**************  RETRIEVED GROUP WITH ID: "+group.getGroupId()+"  ********************");
 							sms.getGroups().add(group);
 							session.merge(sms);
 							response.put("message", "Successfuly added Group ID: "+groupId+" "

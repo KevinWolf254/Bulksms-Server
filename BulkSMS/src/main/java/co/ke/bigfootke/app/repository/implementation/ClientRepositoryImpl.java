@@ -14,6 +14,8 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,7 @@ public class ClientRepositoryImpl implements ClientRepository{
 
 	@Autowired
 	private SessionFactory sessionFactory;
+	private static final Logger log = LoggerFactory.getLogger(ClientRepositoryImpl.class);
 	
 	//for testing response time REMEMBER TO DELETE DURING PRODUCTION
 	private Long startTime = 0L;
@@ -337,7 +340,7 @@ public class ClientRepositoryImpl implements ClientRepository{
 		return new ResponseEntity<Object>(response, HttpStatus.OK);
 	}
 		
-	/* Retrieves all paginated Clients 
+	/* Retrieves all paginated Clients (for UI) 
 	 * maxResults = e.g. 50
 	 * elementsPerPage = size
 	 * totalRecords = totalElements
@@ -392,7 +395,68 @@ public class ClientRepositoryImpl implements ClientRepository{
 		//send the response to the webClient
 		return new ResponseEntity<ClientPagedData>(response, HttpStatus.OK);
 	}
-
+	
+	/**Mainly used by dispatcher to process client country code and phone no**/
+	/***@SuppressWarnings("unchecked")
+	public List<Client> findByGroup(Long groupId){		
+		Session session = sessionFactory.openSession();
+		List<Client> clients = null;
+		try {	
+			Criteria clientCriteria = session.createCriteria(Client.class);
+			//find all clients of the group
+			clientCriteria.createCriteria("groups").add(Restrictions.eq("groupId", groupId));
+			clientCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+			//Order the clients list by id
+			clientCriteria.addOrder(Order.asc("clientId"));
+			//get the clients in a list
+			clients = clientCriteria.list();
+			for(Client client : clients)
+            log.info("**************ADDING CLIENTS WITH ID: "+client.getClientId()+"********************");
+		}catch(HibernateException e) {
+			e.printStackTrace();
+		}finally {
+			session.close();
+		}
+		//send the response to the webClient
+		return clients;
+	}**/
+	
+	@SuppressWarnings("unchecked")
+	public String findByGroup(List<Long> groupsIds){		
+		Session session = sessionFactory.openSession();
+		List<Client> clients = null;
+		StringBuffer buffer = new StringBuffer();
+		try {	
+			for(Long groupId: groupsIds) {
+				Criteria clientCriteria = session.createCriteria(Client.class);
+				//find all clients of the group
+				clientCriteria.createCriteria("groups").add(Restrictions.eq("groupId", groupId));
+				clientCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+				//Order the clients list by id
+				clientCriteria.addOrder(Order.asc("clientId"));
+				//get the clients in a list
+				clients = clientCriteria.list();
+				for(Client client : clients) {
+					String countryCode = client.getCountryCode();
+					String phoneNo = client.getPhoneNo();
+					StringBuffer fullPhoneNo = new StringBuffer();
+					fullPhoneNo.append(countryCode);
+					fullPhoneNo.append(phoneNo);
+					buffer.append(fullPhoneNo.toString());
+					buffer.append(",");
+					log.info("**************ADDING CLIENT WITH ID: "+client.getClientId()+"********************");
+				}
+			}
+		}catch(HibernateException e) {
+			e.printStackTrace();
+		}finally {
+			session.close();
+		}
+		log.info("**************ADDING CLIENTS WITH ID: "+buffer.toString()+"********************");
+		//send the response to the webClient
+		return buffer.toString();
+	}
+	
 	/**Batch Processes all clients received
 	 * by checking if they exist in the database **/
 	public List<Client> batchCheckIfClientExist(List<Client> rawClients) {

@@ -2,6 +2,7 @@ package co.ke.bigfootke.app.services;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import co.ke.bigfootke.app.entities.User;
 import co.ke.bigfootke.app.repository.UserRepository;
@@ -37,6 +38,10 @@ public class UserService implements UserRepository{
 	
 	public void delete(Long id) {
 		repository.delete(id);
+	}
+	
+	public ResponseEntity<Object> addToSms(Long smsId, Long userId) {
+		return repository.addToSms(smsId, userId);
 	}
 	/**processes the SysUser object 
 	 * received from controller**/

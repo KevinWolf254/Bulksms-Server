@@ -83,6 +83,7 @@ public class ClientController {
 	public ResponseEntity<Object> delete(@PathVariable Long clientId){
 		return service.deleteClient(clientId);
 	}
+	
 	/** Add Client(s) to group **/
 	@RequestMapping(method=RequestMethod.POST, value="/group")
 	public ResponseEntity<Object> addToGroup(@RequestBody Family family) {		

@@ -3,19 +3,16 @@ package co.ke.bigfootke.app.controllers;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import co.ke.bigfootke.app.entities.OnDemandSms;
+import co.ke.bigfootke.app.pojos.DispatchedSms;
 import co.ke.bigfootke.app.pojos.PagedOnDemandSms;
 import co.ke.bigfootke.app.services.OnDemandSmsService;
 
@@ -27,18 +24,24 @@ public class OnDemandSmsController {
 	OnDemandSmsService service;
 	private Map<String, String> response;	
 	
-	/**Creates schedule**/
+	/**Send OnDemandSms**/
 	@RequestMapping(method=RequestMethod.POST)
-	public ResponseEntity<Object> createSchedule(@RequestBody @Valid OnDemandSms sms,  BindingResult bindingResult) {
-		if(bindingResult.hasErrors()) {
-			response = new HashMap<>();
-			for(FieldError error:bindingResult.getFieldErrors()) {
-				response.put(error.getField(), error.getDefaultMessage());
-			}
-			return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
-		}
-		return service.createSms(sms);
-	}
+	public ResponseEntity<Object> sendSms(@RequestBody DispatchedSms sms) {		
+		return service.dispatchSms(sms);
+	}	
+	
+	/**Creates schedule**/
+//	@RequestMapping(method=RequestMethod.POST)
+//	public ResponseEntity<Object> createSms(@RequestBody @Valid OnDemandSms sms,  BindingResult bindingResult) {
+//		if(bindingResult.hasErrors()) {
+//			response = new HashMap<>();
+//			for(FieldError error:bindingResult.getFieldErrors()) {
+//				response.put(error.getField(), error.getDefaultMessage());
+//			}
+//			return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+//		}
+//		return service.createSms(sms);
+//	}
 	
 	/**GET ALL ScheduledByDate**/
 	@RequestMapping(method=RequestMethod.GET, value = "/list/{firstResult}")
@@ -89,7 +92,7 @@ public class OnDemandSmsController {
 	
 	/**DELETE ScheduledByDate**/
 	@RequestMapping(method=RequestMethod.DELETE, value = "/delete/{smsId}")
-	public ResponseEntity<Object> deleteSchedule(@PathVariable Long smsId) {
+	public ResponseEntity<Object> deleteSms(@PathVariable Long smsId) {
 		return service.deleteSms(smsId);
 	}
 	

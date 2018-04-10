@@ -44,13 +44,13 @@ public class OnDemandSms {
 	/**NB: DISABLED THE MAPPED BY FEATURE SO THAT
 	 * THE ONDEMANDSMS TABLE DOES NOT HAVE AN EXTRA COLUMN
 	 * INSTEAD A NEW VIEW TABLE WILL BE CREATED**/
-	@OneToMany	
-//	(mappedBy = "sms",
-//			fetch = FetchType.LAZY,
-//			cascade = CascadeType.ALL, orphanRemoval = false)
+	@OneToMany(mappedBy = "sms",
+			fetch = FetchType.LAZY, 
+			cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private Set<Group> groups;
 	
-	@ManyToOne(fetch = FetchType.LAZY, 
+	@ManyToOne
+	(fetch = FetchType.LAZY, 
 			cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 			@JoinTable(name="user_sms",
 				inverseJoinColumns=@JoinColumn(name = "user_fk"),

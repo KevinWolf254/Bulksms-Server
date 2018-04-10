@@ -13,6 +13,8 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +33,7 @@ public class OnDemandSmsRepositoryImpl extends MySessionManager implements OnDem
 	
 	@Autowired
 	private SessionFactory sessionFactory;
-	
+	private static final Logger log = LoggerFactory.getLogger(OnDemandSmsRepositoryImpl.class);
 	private Map<String, String> response;
 	private List<Object> responseList;
 	
@@ -185,18 +187,21 @@ public class OnDemandSmsRepositoryImpl extends MySessionManager implements OnDem
 		return new ResponseEntity<Object>(response, HttpStatus.OK);	
 	}
 
-	private void save(OnDemandSms sms) {
+	public Long save(OnDemandSms sms) {
 		Session session = sessionFactory.openSession();
-		Transaction trans = session.beginTransaction();		
-		try {
-			session.save(sms);
+		Transaction trans = session.beginTransaction();	
+		Long newId = null;
+		try {			
+			newId = (Long) session.save(sms);
+			log.info("############  NEW ONDEMAND SMS ID "+newId+"  ############");
 			trans.commit();
 		}catch(HibernateException e) {
 			trans.rollback();
 			e.printStackTrace();
 		}finally {
 			session.close();
-		}		
+		}	
+		return newId;
 	}
 
 	@Override

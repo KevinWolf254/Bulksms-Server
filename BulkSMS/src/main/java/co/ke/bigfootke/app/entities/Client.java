@@ -116,4 +116,11 @@ public class Client {
 	public void setGroups(Set<Group> groups) {
 		this.groups = groups;
 	}
+
+	@Override
+	public String toString() {
+		return "Client [clientId=" + clientId + ", countryCode=" + countryCode + ", phoneNo=" + phoneNo + ", fullName="
+				+ fullName + ", telecom=" + telecom + ", groups=" + groups + "]";
+	}
+	
 }
