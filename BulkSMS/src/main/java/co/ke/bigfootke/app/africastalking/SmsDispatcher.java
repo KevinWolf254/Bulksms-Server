@@ -15,8 +15,8 @@ public class SmsDispatcher {
 	private Map<String, String> response;
 	
 	private static final Logger log = LoggerFactory.getLogger(SmsDispatcher.class);
-	String username = "sandbox";
-	private String apiKey = "ad265875a1f43287b2fec500b7902bfb5d58ed5448323d64e04c361639d88fb3";
+	String username = "KevinWolf254";
+	private String apiKey = "83d67fbaaada158aaaede8d41aced7ca35582cad4ebd51409135b35ef49f436d";
 	private AfricasTalkingGateway gateway  = new AfricasTalkingGateway(username, apiKey);
 	
 	public ResponseEntity<Object> sendOnDemandSms(String recipients, String message) {
