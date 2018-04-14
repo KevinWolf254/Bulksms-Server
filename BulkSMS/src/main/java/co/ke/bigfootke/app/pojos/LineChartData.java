@@ -5,7 +5,7 @@ import java.util.List;
 public class LineChartData {
 
 	private String label;
-	private List<Integer> data;
+	private List<Integer> monthlyExpenditure;
 	
 	public LineChartData() {
 	}
@@ -18,12 +18,12 @@ public class LineChartData {
 		this.label = label;
 	}
 
-	public List<Integer> getData() {
-		return data;
+	public List<Integer> getMonthlyExpenditure() {
+		return monthlyExpenditure;
 	}
 
-	public void setData(List<Integer> data) {
-		this.data = data;
+	public void setMonthlyExpenditure(List<Integer> data) {
+		this.monthlyExpenditure = data;
 	}
 	
 }

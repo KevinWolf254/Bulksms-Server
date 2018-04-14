@@ -7,9 +7,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import co.ke.bigfootke.app.entities.User;
-import co.ke.bigfootke.app.entities.Credentials;
-import co.ke.bigfootke.app.repository.implementation.UserAccessRepositoryImpl;
+import co.ke.bigfootke.app.jpa.entities.Credentials;
+import co.ke.bigfootke.app.jpa.entities.User;
+import co.ke.bigfootke.app.jpa.implementations.CredentialsJpaImplementation;
 
 
 public class CustomUserDetails extends User implements UserDetails{
@@ -18,7 +18,7 @@ public class CustomUserDetails extends User implements UserDetails{
 	 */
 	private static final long serialVersionUID = 1L;
 	@Autowired
-	UserAccessRepositoryImpl userAccessRepo;
+	CredentialsJpaImplementation userAccessRepo;
 
 	public CustomUserDetails(final User user) {
 		super(user);
