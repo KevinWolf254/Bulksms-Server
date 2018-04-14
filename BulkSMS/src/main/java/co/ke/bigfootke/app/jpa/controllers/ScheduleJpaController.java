@@ -18,7 +18,7 @@ import co.ke.bigfootke.app.jpa.entities.Schedule;
 import co.ke.bigfootke.app.jpa.service.ScheduleJpaService;
 
 @RestController
-@RequestMapping(value = "api/schedule/new")
+@RequestMapping(value = "api/schedule")
 @CrossOrigin(origins="http://localhost:4200")
 public class ScheduleJpaController {
 

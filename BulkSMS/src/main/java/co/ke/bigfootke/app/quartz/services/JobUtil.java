@@ -26,65 +26,65 @@ public class JobUtil {
 	 * 
 	 * @return JobDetail object
 	 */
-//	protected static JobDetail createJob(Class<? extends QuartzJobBean> jobClass, boolean isDurable, 
-//			ApplicationContext context, String jobName, String jobGroup){
-//	    JobDetailFactoryBean factoryBean = new JobDetailFactoryBean();
-//	    factoryBean.setJobClass(jobClass);
-//	    factoryBean.setDurability(isDurable);
-//	    factoryBean.setApplicationContext(context);
-//	    factoryBean.setName(jobName);
-//	    factoryBean.setGroup(jobGroup);
-//        
-//	    // set job data map
-//        JobDataMap jobDataMap = new JobDataMap();
-//        jobDataMap.put("myKey", "myValue");
-//        factoryBean.setJobDataMap(jobDataMap);
-//        
-//        factoryBean.afterPropertiesSet();
-//        
-//	    return factoryBean.getObject();
-//	}
-//
-//	/**
-//	 * Create cron trigger. 
-//	 * 
-//	 * @param triggerName Trigger name.
-//	 * @param startTime Trigger start time.
-//	 * @param cronExpression Cron expression.
-//	 * @param misFireInstruction Misfire instruction (what to do in case of misfire happens).
-//	 *  
-//	 * @return Trigger
-//	 */
-//	protected static Trigger createCronTrigger(String triggerName, Date startTime, String cronExpression, int misFireInstruction){
-//		CronTriggerFactoryBeanConfig factoryBean = new CronTriggerFactoryBeanConfig();
-//	    factoryBean.setName(triggerName);
-//	    factoryBean.setStartTime(startTime);
-//	    factoryBean.setCronExpression(cronExpression);
-//	    factoryBean.setMisfireInstruction(misFireInstruction);
-//	    try {
-//	        factoryBean.afterPropertiesSet();
-//	    } catch (ParseException e) {
-//	        e.printStackTrace();
-//	    }
-//	    return factoryBean.getObject();
-//	}
-//	
-//	/**
-//	 * Create a Single trigger.
-//	 * 
-//	 * @param triggerName Trigger name.
-//	 * @param startTime Trigger start time.
-//	 * @param misFireInstruction Misfire instruction (what to do in case of misfire happens).
-//	 * 
-//	 * @return Trigger
-//	 */
-//	protected static Trigger createSingleTrigger(String triggerName, Date startTime, int misFireInstruction){
-//		SimpleTriggerFactoryBean factoryBean = new SimpleTriggerFactoryBean();
-//	    factoryBean.setName(triggerName);
-//	    factoryBean.setStartTime(startTime);
-//	    factoryBean.setMisfireInstruction(misFireInstruction);
-//	    factoryBean.setRepeatCount(0);
-//	    factoryBean.afterPropertiesSet();
-//	    return factoryBean.getObject();
-//	}
+	protected static JobDetail createJob(Class<? extends QuartzJobBean> jobClass, boolean isDurable, 
+			ApplicationContext context, String jobName, String jobGroup){
+	    JobDetailFactoryBean factoryBean = new JobDetailFactoryBean();
+	    factoryBean.setJobClass(jobClass);
+	    factoryBean.setDurability(isDurable);
+	    factoryBean.setApplicationContext(context);
+	    factoryBean.setName(jobName);
+	    factoryBean.setGroup(jobGroup);
+        
+	    // set job data map
+        JobDataMap jobDataMap = new JobDataMap();
+        jobDataMap.put("myKey", "myValue");
+        factoryBean.setJobDataMap(jobDataMap);
+        
+        factoryBean.afterPropertiesSet();
+        
+	    return factoryBean.getObject();
+	}
+
+	/**
+	 * Create cron trigger. 
+	 * 
+	 * @param triggerName Trigger name.
+	 * @param startTime Trigger start time.
+	 * @param cronExpression Cron expression.
+	 * @param misFireInstruction Misfire instruction (what to do in case of misfire happens).
+	 *  
+	 * @return Trigger
+	 */
+	protected static Trigger createCronTrigger(String triggerName, Date startTime, String cronExpression, int misFireInstruction){
+		CronTriggerFactoryBeanConfig factoryBean = new CronTriggerFactoryBeanConfig();
+	    factoryBean.setName(triggerName);
+	    factoryBean.setStartTime(startTime);
+	    factoryBean.setCronExpression(cronExpression);
+	    factoryBean.setMisfireInstruction(misFireInstruction);
+	    try {
+	        factoryBean.afterPropertiesSet();
+	    } catch (ParseException e) {
+	        e.printStackTrace();
+	    }
+	    return factoryBean.getObject();
+	}
+	
+	/**
+	 * Create a Single trigger.
+	 * 
+	 * @param triggerName Trigger name.
+	 * @param startTime Trigger start time.
+	 * @param misFireInstruction Misfire instruction (what to do in case of misfire happens).
+	 * 
+	 * @return Trigger
+	 */
+	protected static Trigger createSingleTrigger(String triggerName, Date startTime, int misFireInstruction){
+		SimpleTriggerFactoryBean factoryBean = new SimpleTriggerFactoryBean();
+	    factoryBean.setName(triggerName);
+	    factoryBean.setStartTime(startTime);
+	    factoryBean.setMisfireInstruction(misFireInstruction);
+	    factoryBean.setRepeatCount(0);
+	    factoryBean.afterPropertiesSet();
+	    return factoryBean.getObject();
+	}
 }

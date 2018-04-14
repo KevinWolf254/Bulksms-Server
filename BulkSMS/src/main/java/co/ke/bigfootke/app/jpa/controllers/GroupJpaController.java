@@ -14,7 +14,7 @@ import co.ke.bigfootke.app.jpa.service.GroupJpaService;
 import co.ke.bigfootke.app.pojos.Family;
 
 @RestController
-@RequestMapping(value = "api/group/new")
+@RequestMapping(value = "api/group")
 @CrossOrigin(origins="http://localhost:4200")
 public class GroupJpaController {
 

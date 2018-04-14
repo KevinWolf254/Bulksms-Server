@@ -35,4 +35,53 @@
            timeToIdleSeconds="600"
            timeToLiveSeconds="3600" 
            overflowToDisk="true"/>
+    
+    <cache name="schedule.id"
+           maxElementsInMemory="10000" 
+           eternal="false" 
+           timeToIdleSeconds="600"
+           timeToLiveSeconds="3600" 
+           overflowToDisk="true"/>
+               
+    <cache name="schedule.paged"
+           maxElementsInMemory="10000" 
+           eternal="false" 
+           timeToIdleSeconds="600"
+           timeToLiveSeconds="3600" 
+           overflowToDisk="true"/>
+           
+    <cache name="schedule.date"
+           maxElementsInMemory="10000" 
+           eternal="false" 
+           timeToIdleSeconds="600"
+           timeToLiveSeconds="3600" 
+           overflowToDisk="true"/>
+           
+    <cache name="schedule.title"
+           maxElementsInMemory="10000" 
+           eternal="false" 
+           timeToIdleSeconds="600"
+           timeToLiveSeconds="3600" 
+           overflowToDisk="true"/>
+           
+    <cache name="schedule.byGroup"
+           maxElementsInMemory="10000" 
+           eternal="false" 
+           timeToIdleSeconds="600"
+           timeToLiveSeconds="3600" 
+           overflowToDisk="true"/>
+      
+    <cache name="sms.paged"
+           maxElementsInMemory="10000" 
+           eternal="false" 
+           timeToIdleSeconds="600"
+           timeToLiveSeconds="3600" 
+           overflowToDisk="true"/>
+          
+    <cache name="sms.byGroup"
+           maxElementsInMemory="10000" 
+           eternal="false" 
+           timeToIdleSeconds="600"
+           timeToLiveSeconds="3600" 
+           overflowToDisk="true"/>
 </ehcache>

@@ -17,7 +17,7 @@ import co.ke.bigfootke.app.jpa.service.ClientJpaService;
 import co.ke.bigfootke.app.pojos.Family;
 
 @RestController
-@RequestMapping(value = "api/client/new")
+@RequestMapping(value = "api/client")
 @CrossOrigin(origins="http://localhost:4200")
 public class ClientJpaController {
 

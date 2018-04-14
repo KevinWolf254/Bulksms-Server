@@ -14,7 +14,7 @@ import co.ke.bigfootke.app.jpa.entities.Sms;
 import co.ke.bigfootke.app.jpa.service.SmsJpaService;
 
 @RestController
-@RequestMapping(value = "api/sms/new")
+@RequestMapping(value = "api/sms")
 @CrossOrigin(origins="http://localhost:4200")
 public class SmsJpaController {
 
