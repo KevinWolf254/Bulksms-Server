@@ -2,14 +2,14 @@ package co.ke.bigfootke.app.pojos;
 
 import java.util.List;
 
-public class DispatchedSms {
-
+public class SmsContainer {
+	
 	private String message;
-	private List<Long> groupIds;
 	private int cost;
+	private List<Long> groupIds;
 	private Long senderId;
 	
-	public DispatchedSms() {
+	public SmsContainer() {
 	}
 
 	public String getMessage() {
@@ -20,14 +20,6 @@ public class DispatchedSms {
 		this.message = message;
 	}
 
-	public List<Long> getGroupIds() {
-		return groupIds;
-	}
-
-	public void setGroupIds(List<Long> groupIds) {
-		this.groupIds = groupIds;
-	}
-
 	public int getCost() {
 		return cost;
 	}
@@ -36,11 +28,20 @@ public class DispatchedSms {
 		this.cost = cost;
 	}
 
+	public List<Long> getGroupIds() {
+		return groupIds;
+	}
+
+	public void setGroupIds(List<Long> groupIds) {
+		this.groupIds = groupIds;
+	}
+
 	public Long getSenderId() {
 		return senderId;
 	}
 
 	public void setSenderId(Long senderId) {
 		this.senderId = senderId;
-	}	
+	}
+	
 }

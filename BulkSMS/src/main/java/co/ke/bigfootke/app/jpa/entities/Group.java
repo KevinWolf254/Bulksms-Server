@@ -44,22 +44,7 @@ public class Group {
 	@ManyToMany(mappedBy = "groups",
 			fetch = FetchType.LAZY, 
 			cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-	private Set<Schedule> schedule;
-	
-//	@ManyToMany(mappedBy = "groups",
-//			fetch = FetchType.LAZY, 
-//			cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-//	private Set<DateSchedule> dateSchedule;
-//	
-//	@ManyToMany(mappedBy = "weeklyGroups",
-//			fetch = FetchType.LAZY, 
-//			cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-//	private Set<WeekSchedule> weekSchedule;
-//	
-//	@ManyToMany(mappedBy = "monthlyGroups",
-//			fetch = FetchType.LAZY, 
-//			cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-//	private Set<MonthSchedule> monthSchedule;
+	private Set<ScheduledSms> schedule;
 	
 	@ManyToOne(fetch = FetchType.LAZY, 
 			cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -144,11 +129,11 @@ public class Group {
 	}
 
 	@JsonIgnore	
-	public Set<Schedule> getSchedule() {
+	public Set<ScheduledSms> getSchedule() {
 		return schedule;
 	}
 
-	public void setSchedule(Set<Schedule> schedule) {
+	public void setSchedule(Set<ScheduledSms> schedule) {
 		this.schedule = schedule;
 	}
 

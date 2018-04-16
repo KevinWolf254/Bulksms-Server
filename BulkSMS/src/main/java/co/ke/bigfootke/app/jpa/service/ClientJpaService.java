@@ -158,17 +158,5 @@ public class ClientJpaService {
 		response.put("message", "Deleted");
 		repository.deleteFromGroup(clientId, groupId);
 		return new ResponseEntity<Object>(response, HttpStatus.OK);	
-	}
-
-	public String processPhoneNos(List<Long> groupIds) {
-		List<Long> processedGroups = new ArrayList<>();
-		for(Long groupId : groupIds) {
-			if(groupImpl.exists(groupId) && groupId > 0) {
-				processedGroups.add(groupId);
-			}
-		}
-		return repository.processPhoneNos(processedGroups);
-	}
-
-	
+	}	
 }

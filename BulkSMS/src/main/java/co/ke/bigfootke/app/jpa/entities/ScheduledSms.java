@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.NotBlank;
@@ -23,8 +24,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="scheduleId")
 @Entity
-@Table(name="schedule")
-public class Schedule {
+@Table(name="scheduled_sms")
+public class ScheduledSms {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -39,7 +40,7 @@ public class Schedule {
 	@Column(name = "message")
 	private String message;
 	
-	@NotBlank(message="Please enter date of when to send sms")
+//	@NotBlank(message="Please enter date of when to send sms")
 	@Column(name = "date")
 	private Date date;
 	
@@ -47,14 +48,26 @@ public class Schedule {
 	@Column(name = "time")
 	private String time;
 
-	@ManyToMany(fetch = FetchType.LAZY, 
+	@ManyToMany(fetch = FetchType.EAGER, 
 			cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-			@JoinTable(name="date_schedule_groups",
+			@JoinTable(name="scheduled_sms_groups",
 				inverseJoinColumns=@JoinColumn(name = "group_fk"),
-				joinColumns=@JoinColumn(name = "schedule_fk"))
-		private Set<Group> groups;
+				joinColumns=@JoinColumn(name = "scheduled_sms_fk"))
+	private Set<Group> groups;
+	
+	@OneToMany(mappedBy = "schedule",
+			fetch = FetchType.LAZY, 
+			cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	private Set<ScheduledSmsCost> costs;
 
-	public Schedule() {
+	public ScheduledSms() {
+	}
+	
+	public ScheduledSms(String title, String message, Date date, String time) {
+		this.title = title;
+		this.message = message;
+		this.date = date;
+		this.time = time;
 	}
 
 	public Long getScheduleId() {

@@ -2,6 +2,7 @@ package co.ke.bigfootke.app.jpa.service;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import co.ke.bigfootke.app.jpa.entities.Schedule;
+import co.ke.bigfootke.app.jpa.entities.ScheduledSms;
 import co.ke.bigfootke.app.jpa.implementations.GroupJpaImplementation;
 import co.ke.bigfootke.app.jpa.implementations.ScheduleJpaImplementation;
+import co.ke.bigfootke.app.pojos.ScheduledSmsContainer;
 
 @Service
 public class ScheduleJpaService {
@@ -26,11 +28,17 @@ public class ScheduleJpaService {
 	private GroupJpaImplementation groupImpl;
 	private Map<String, String> response;
 	
- 	public ResponseEntity<Object> create(Schedule schedule) {
+ 	public ResponseEntity<Object> create(ScheduledSmsContainer smsContainer  ) {
 		response = new HashMap<>();
+		ScheduledSms schedule = new ScheduledSms(smsContainer.getTitle(), smsContainer.getMessage(), smsContainer.getDate(),
+				smsContainer.getTime());
 		if(schedule.getMessage() != null && schedule.getTitle() != null) {
-			Schedule newSchedule = repository.create(schedule);
+			ScheduledSms newSchedule = repository.create(schedule);
 			response.put("message", "Success: Created "+newSchedule);
+			//retrieve groups ids to add to schedule
+			List<Long> groupIds = smsContainer.getGroupIds();
+			//add groups to schedule
+			groupImpl.addToSchedule(newSchedule.getScheduleId(), groupIds);
 			return new ResponseEntity<Object>(response, HttpStatus.OK);
 		}
 		response.put("message", "Error: Fill required fields");
@@ -48,7 +56,7 @@ public class ScheduleJpaService {
 	}
 	
 	@Cacheable(value = "schedule.paged", key="#pageNo", unless = "#result != null")
-	public ResponseEntity<Page<Schedule>> findAll(int pageNo, int pageSize) {
+	public ResponseEntity<Page<ScheduledSms>> findAll(int pageNo, int pageSize) {
 		return repository.findAll(pageNo, pageSize);
 	}
 	
@@ -72,7 +80,7 @@ public class ScheduleJpaService {
 			response.put("message", "Error: Could not find group");
 			return new ResponseEntity<Object>(response, HttpStatus.NOT_FOUND);				
 		}
-		final Page<Schedule> schedule = repository.findByGroup(groupId, pageNo, pageSize);
+		final Page<ScheduledSms> schedule = repository.findByGroup(groupId, pageNo, pageSize);
 		return new ResponseEntity<Object>(schedule, HttpStatus.OK);
 	} 
 	

@@ -21,7 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
-import co.ke.bigfootke.app.jpa.entities.Schedule;
+import co.ke.bigfootke.app.jpa.entities.ScheduledSms;
 import co.ke.bigfootke.app.jpa.repository.ScheduleJpaRepo;
 
 @Repository
@@ -37,54 +37,54 @@ public class ScheduleJpaImplementation {
 		return repository.exists(scheduleId);
 	}
 	
-	public Schedule create(Schedule schedule) {
-		Schedule newSchedule = repository.save(schedule);	
+	public ScheduledSms create(ScheduledSms schedule) {
+		ScheduledSms newSchedule = repository.save(schedule);	
 		log.info("***** Created: "+newSchedule);
 		return newSchedule;
 	}
 	
-	public Schedule findById(final Long scheduleId) {
-		Schedule schedule = repository.findOne(scheduleId);	
+	public ScheduledSms findById(final Long scheduleId) {
+		ScheduledSms schedule = repository.findOne(scheduleId);	
 		log.info("***** Found: "+schedule);
 		return schedule;
 	}
 
-	public Schedule findByTitle(String title) {
+	public ScheduledSms findByTitle(String title) {
 		return repository.findByTitle(title);
 	}
 	
-	public Schedule findByDate(Date date) {
+	public ScheduledSms findByDate(Date date) {
 		return repository.findByDate(date);
 	}
 		
-	public ResponseEntity<Page<Schedule>> findAll(final int pageNo, final int pageSize){
-		Page<Schedule> schedules = repository.findAll(new PageRequest(pageNo, pageSize));
+	public ResponseEntity<Page<ScheduledSms>> findAll(final int pageNo, final int pageSize){
+		Page<ScheduledSms> schedules = repository.findAll(new PageRequest(pageNo, pageSize));
 		//send the response to the webClient
-		return new ResponseEntity<Page<Schedule>>(schedules, HttpStatus.OK);
+		return new ResponseEntity<Page<ScheduledSms>>(schedules, HttpStatus.OK);
 	}
 	
 	public void delete(final Long scheduleId){		
-		final Schedule schedule = findById(scheduleId);
+		final ScheduledSms schedule = findById(scheduleId);
 		log.info("***** Removing groups assigned to schedule");
 		schedule.getGroups().removeAll(schedule.getGroups());
 		repository.delete(scheduleId);		
 		log.info("***** deleted: "+schedule);
 	}
 	
-	public Page<Schedule> findByGroup(final Long groupId, final int pageNo, final int pageSize){
+	public Page<ScheduledSms> findByGroup(final Long groupId, final int pageNo, final int pageSize){
 		return repository.findByGroupsGroupIdOrderByDate(groupId, new PageRequest(pageNo, pageSize));		
 	}
 
-	public List<Schedule> findBtwnDates(Date firstDate, Date lastDate) {
+	public List<ScheduledSms> findBtwnDates(Date firstDate, Date lastDate) {
 		final EntityManager manager = factory.createEntityManager();
 		
 		CriteriaBuilder builder = manager.getCriteriaBuilder();
-		CriteriaQuery<Schedule> query = builder.createQuery(Schedule.class);
-		Root<Schedule> root = query.from(Schedule.class);
+		CriteriaQuery<ScheduledSms> query = builder.createQuery(ScheduledSms.class);
+		Root<ScheduledSms> root = query.from(ScheduledSms.class);
 		Path<Date> date = root.get("date");
 		Predicate predicate = builder.between(date, firstDate, lastDate);
 		query.where(predicate);
-		List<Schedule> schedules =  manager.createQuery(query).getResultList();
+		List<ScheduledSms> schedules =  manager.createQuery(query).getResultList();
 		return schedules;
 	}
 	

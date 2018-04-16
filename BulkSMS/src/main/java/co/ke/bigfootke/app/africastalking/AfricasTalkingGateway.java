@@ -5,7 +5,9 @@ import java.net.*;
 import java.util.*;
 import java.util.Map.Entry;
 
-import org.json.*;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 
 public class AfricasTalkingGateway {
 
@@ -335,13 +337,17 @@ public class AfricasTalkingGateway {
     
     private JSONArray sendMessageImpl(String to_, String message_, HashMap<String, String> data_) throws Exception {
     	String response = sendPOSTRequest(data_, getSmsUrl());
-    	if (responseCode == HTTP_CODE_CREATED) {
-	    JSONObject jsObject   = new JSONObject(response);
-	    JSONArray  recipients = jsObject.getJSONObject("SMSMessageData").getJSONArray("Recipients");
-	    if(recipients.length() > 0) return recipients;
-	    
-	    throw new Exception(jsObject.getJSONObject("SMSMessageData").getString("Message"));
-    	}
+    	try {
+			if (responseCode == HTTP_CODE_CREATED) {
+			JSONObject jsObject   = new JSONObject(response);
+			JSONArray  recipients = jsObject.getJSONObject("SMSMessageData").getJSONArray("Recipients");
+			if(recipients.length() > 0) return recipients;
+			
+			throw new Exception(jsObject.getJSONObject("SMSMessageData").getString("Message"));
+			}
+		} catch (ClassNotFoundException e) {
+			System.out.println(e.getMessage());
+		}
     	
     	throw new Exception(response);
     }

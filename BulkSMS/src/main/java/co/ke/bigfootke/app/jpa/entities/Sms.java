@@ -56,6 +56,13 @@ public class Sms {
 	
 	public Sms() {
 	}
+	
+	public Sms(String message, int cost, Date date) {
+		super();
+		this.message = message;
+		this.cost = cost;
+		this.date = date;
+	}
 
 	public Long getSmsId() {
 		return smsId;

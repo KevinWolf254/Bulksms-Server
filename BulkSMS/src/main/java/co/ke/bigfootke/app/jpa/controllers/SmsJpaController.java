@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.ke.bigfootke.app.jpa.entities.Sms;
 import co.ke.bigfootke.app.jpa.service.SmsJpaService;
+import co.ke.bigfootke.app.pojos.SmsContainer;
 
 @RestController
 @RequestMapping(value = "api/sms")
@@ -21,9 +22,9 @@ public class SmsJpaController {
 	@Autowired
 	private SmsJpaService service;
 	
-	@RequestMapping(method=RequestMethod.POST, value = "user/{userId}")
-	public ResponseEntity<Object> create(@RequestBody Sms sms, @PathVariable Long userId) {		
-		return service.create(sms, userId);
+	@RequestMapping(method=RequestMethod.POST)
+	public ResponseEntity<Object> sendSms(@RequestBody SmsContainer smsContainer) {		
+		return service.sendSms(smsContainer);
 	}
 	@RequestMapping(method = RequestMethod.GET, value = "/page/{pageNo}/size/{pageSize}")
 	public ResponseEntity<Page<Sms>> findAll(@PathVariable int pageNo, @PathVariable int pageSize) {

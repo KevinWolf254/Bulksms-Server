@@ -1,8 +1,14 @@
 package co.ke.bigfootke.app.jpa.service;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -12,10 +18,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import co.ke.bigfootke.app.africastalking.SmsDispatcher;
+import co.ke.bigfootke.app.jpa.entities.Group;
 import co.ke.bigfootke.app.jpa.entities.Sms;
+import co.ke.bigfootke.app.jpa.implementations.ClientJpaImplementation;
 import co.ke.bigfootke.app.jpa.implementations.GroupJpaImplementation;
 import co.ke.bigfootke.app.jpa.implementations.SmsJpaImplementation;
 import co.ke.bigfootke.app.jpa.implementations.UserJpaImplementation;
+import co.ke.bigfootke.app.pojos.SmsContainer;
 
 @Service
 public class SmsJpaService {
@@ -26,21 +36,23 @@ public class SmsJpaService {
 	private GroupJpaImplementation groupImpl;
 	@Autowired
 	private UserJpaImplementation userImpl;
+	@Autowired
+	private ClientJpaImplementation clientImpl;
+	
+	private SmsDispatcher dispatcher;
+
+	private static final Logger log = LoggerFactory.getLogger(SmsJpaService.class);
 	private Map<String, String> response;
 	
-	public ResponseEntity<Object> create(Sms sms, Long userId) {
-		response = new HashMap<>();
-		if(sms.getMessage() != null) {
-			Sms newSms = repository.create(sms);
-			response.put("message", "Success: Created "+newSms);
-			//Link sms to user
-			userImpl.addToSms(newSms.getSmsId(), userId);
-			return new ResponseEntity<Object>(response, HttpStatus.OK);
-		}
-		response.put("message", "Error: Fill required fields");
-		return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
+	public Sms saveSms(Sms sms, List<Long> groupIds,  Long userId) {	
+		Sms newSms = repository.create(sms);
+		//Link groups to sms
+		groupImpl.addToOnDemandSms(newSms.getSmsId(), groupIds);
+		//Link sms to user
+		userImpl.addToSms(newSms.getSmsId(), userId);
+		return newSms;
 	}
-	
+
 	public ResponseEntity<Object> findById(Long smsId) {
 		if(!repository.exists(smsId)) {
 			response = new HashMap<>();
@@ -78,4 +90,35 @@ public class SmsJpaService {
 		return new ResponseEntity<Object>(response, HttpStatus.OK);	
 	}
 	
+	public ResponseEntity<Object> sendSms(SmsContainer smsRequest) {
+		//instantiate the sms dispatcher
+		dispatcher = new SmsDispatcher();
+		if(smsRequest.getMessage() != null) {
+	        log.info("***** Sending sms");
+	        //Create sms
+			//set calendar date
+			Calendar today = Calendar.getInstance();
+	        Sms newSms = new Sms(smsRequest.getMessage(), smsRequest.getCost(), today.getTime());
+	        //save the sent sms
+	        Sms processedSms = saveSms(newSms, smsRequest.getGroupIds(), smsRequest.getSenderId());
+	        //process the groups to get their clients full phoneNo
+	        String recipients = processGroups(processedSms.getGroups());
+			//Send to africastalking api and receive response
+			return new ResponseEntity<Object>(dispatcher.sendOnDemandSms(recipients, processedSms.getMessage())
+					, HttpStatus.OK);
+		}
+		return new ResponseEntity<Object>("ERROR: Message must be included", HttpStatus.BAD_REQUEST);
+	}
+
+	public String processGroups(Set<Group> recipientGroups) {
+		String receipients = null;
+		List<Long> allGroupIds = new ArrayList<>();;
+		//Retrieve clients of groups
+		for(Group group : recipientGroups) {
+			Long groupId = group.getGroupId();
+			allGroupIds.add(groupId);
+		}
+		receipients = clientImpl.processPhoneNos(allGroupIds);
+		return receipients;
+	}
 }

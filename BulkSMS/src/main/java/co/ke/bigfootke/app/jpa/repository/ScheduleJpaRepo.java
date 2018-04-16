@@ -10,20 +10,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-import co.ke.bigfootke.app.jpa.entities.Schedule;
+import co.ke.bigfootke.app.jpa.entities.ScheduledSms;
 
-public interface ScheduleJpaRepo extends JpaRepository<Schedule, Long>, 
-											PagingAndSortingRepository<Schedule,Long>{
+public interface ScheduleJpaRepo extends JpaRepository<ScheduledSms, Long>, 
+											PagingAndSortingRepository<ScheduledSms,Long>{
 
-	public Schedule findByTitle(String title);
+	public ScheduledSms findByTitle(String title);
 	
-	public Schedule findByDate(Date date);
+	public ScheduledSms findByDate(Date date);
 	
-	public Page<Schedule> findAll(Pageable page);
+	public Page<ScheduledSms> findAll(Pageable page);
 	
 	@Transactional
-    Page<Schedule> findByGroupsGroupIdOrderByDate(Long groupId, Pageable pageable);
+    Page<ScheduledSms> findByGroupsGroupIdOrderByDate(Long groupId, Pageable pageable);
 	
 	@Transactional
-	List<Schedule> findByGroupsGroupIdOrderByDate(Long groupId);
+	List<ScheduledSms> findByGroupsGroupIdOrderByDate(Long groupId);
 }

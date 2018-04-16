@@ -20,7 +20,6 @@ public class SmsDispatcher {
 	private AfricasTalkingGateway gateway  = new AfricasTalkingGateway(username, apiKey);
 	
 	public ResponseEntity<Object> sendOnDemandSms(String recipients, String message) {
-//		String recipients = "+254724166274";
 		response = new HashMap<>();
 		 try {
 	            JSONArray results = gateway.sendMessage(recipients, message);
@@ -30,12 +29,11 @@ public class SmsDispatcher {
 	                		+" "+result.getString("number")
 	                		+" "+result.getString("messageId")
 	                		+" "+result.getString("cost"));
-	    			response.put("message", "Success: BulkSms has been sent");
 	            }
+    			response.put("message", "Success: BulkSms has been sent");
+                log.info("***** SMS has been sent successfully");
 	        } catch (Exception e) {
-                log.info("**************ERROR********************");
-	        	log.info("Encountered error while sending: " + e.getMessage());
-                log.info("***************************************");
+	        	log.info("***** ERROR!! sending SMS - " + e.getMessage());
     			response.put("message", "Error: Something went wrong communicating with SMS API provider");
 	        }
 			return new ResponseEntity<Object>(response, HttpStatus.OK);

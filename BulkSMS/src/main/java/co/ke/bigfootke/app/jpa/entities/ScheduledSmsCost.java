@@ -2,19 +2,23 @@ package co.ke.bigfootke.app.jpa.entities;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
+//import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 
 @Entity
 @Table(name="schedule_cost")
-public class ScheduleCost {
+public class ScheduledSmsCost {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -22,16 +26,21 @@ public class ScheduleCost {
 	private Long costId;
 	
 	@Column(name = "cost")
-	private Double cost;
+	private int cost;
 	
 	@Column(name = "date_sent")
 	private Date dateSent;
 	
-	@OneToOne
-	@JoinColumn(name = "schedule")
-	private Schedule schedule;
+//	@OneToOne
+//	@JoinColumn(name = "schedule")
+	@ManyToOne(fetch = FetchType.LAZY, 
+			cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+			@JoinTable(name="recurring_sms_costs",
+				inverseJoinColumns=@JoinColumn(name = "sms_fk"),
+				joinColumns=@JoinColumn(name = "recurring_cost_fk"))
+	private ScheduledSms schedule;
 
-	public ScheduleCost() {
+	public ScheduledSmsCost() {
 	}
 
 	public Long getCostId() {
@@ -42,11 +51,11 @@ public class ScheduleCost {
 		this.costId = costId;
 	}
 
-	public Double getCost() {
+	public int getCost() {
 		return cost;
 	}
 
-	public void setCost(Double cost) {
+	public void setCost(int cost) {
 		this.cost = cost;
 	}
 
@@ -58,11 +67,11 @@ public class ScheduleCost {
 		this.dateSent = dateSent;
 	}
 
-	public Schedule getSchedule() {
+	public ScheduledSms getSchedule() {
 		return schedule;
 	}
 
-	public void setSchedule(Schedule schedule) {
+	public void setSchedule(ScheduledSms schedule) {
 		this.schedule = schedule;
 	}
 

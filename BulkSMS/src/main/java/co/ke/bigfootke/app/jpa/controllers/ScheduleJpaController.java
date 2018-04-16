@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import co.ke.bigfootke.app.jpa.entities.Schedule;
+import co.ke.bigfootke.app.jpa.entities.ScheduledSms;
 import co.ke.bigfootke.app.jpa.service.ScheduleJpaService;
+import co.ke.bigfootke.app.pojos.ScheduledSmsContainer;
 
 @RestController
 @RequestMapping(value = "api/schedule")
@@ -26,12 +27,12 @@ public class ScheduleJpaController {
 	private ScheduleJpaService service;
 	
 	@RequestMapping(method=RequestMethod.POST)
-	public ResponseEntity<Object> create(@RequestBody Schedule schedule) {		
-		return service.create(schedule);
+	public ResponseEntity<Object> create(@RequestBody ScheduledSmsContainer container) {		
+		return service.create(container);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/page/{pageNo}/size/{pageSize}")
-	public ResponseEntity<Page<Schedule>> findAll(@PathVariable int pageNo, @PathVariable int pageSize) {
+	public ResponseEntity<Page<ScheduledSms>> findAll(@PathVariable int pageNo, @PathVariable int pageSize) {
 		return service.findAll(pageNo, pageSize);	
 	}
 	

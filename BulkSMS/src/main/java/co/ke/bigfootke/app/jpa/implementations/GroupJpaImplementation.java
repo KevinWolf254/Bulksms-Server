@@ -3,8 +3,10 @@ package co.ke.bigfootke.app.jpa.implementations;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 
 import javax.persistence.EntityManager;
@@ -25,8 +27,8 @@ import org.springframework.stereotype.Repository;
 
 import co.ke.bigfootke.app.jpa.entities.Group;
 import co.ke.bigfootke.app.jpa.entities.Sms;
-import co.ke.bigfootke.app.jpa.entities.Schedule;
-import co.ke.bigfootke.app.jpa.entities.ScheduleCost;
+import co.ke.bigfootke.app.jpa.entities.ScheduledSms;
+import co.ke.bigfootke.app.jpa.entities.ScheduledSmsCost;
 import co.ke.bigfootke.app.jpa.repository.ClientJpaRepo;
 import co.ke.bigfootke.app.jpa.repository.GroupJpaRepo;
 import co.ke.bigfootke.app.pojos.LineChartData;
@@ -109,12 +111,24 @@ public class GroupJpaImplementation {
 		final EntityManager manager = factory.createEntityManager();
 		Sms sms = smsImpl.findById(smsId);
 		manager.getTransaction().begin();
-		for(Long groupId: groupIds) {
-			if(exists(groupId)) {
-				Group group = findById(groupId);
-				sms.getGroups().add(group);
-				log.info("***** Added "+group+" to "+sms);
+		Set<Group> processedGroups = new HashSet<>();
+		if(sms.getGroups() != null) {
+			for(Long groupId: groupIds) {
+				if(exists(groupId)) {
+					Group group = findById(groupId);
+					sms.getGroups().add(group);
+					log.info("***** Added "+group+" to "+sms);
+				}
 			}
+		}else {
+			for(Long groupId: groupIds) {
+				if(exists(groupId)) {
+					Group group = findById(groupId);
+					processedGroups.add(group);
+					log.info("***** Added group "+group+" to "+sms);
+				}
+			}
+			sms.setGroups(processedGroups);
 		}
 		manager.merge(sms);
 		manager.getTransaction().commit();
@@ -122,22 +136,34 @@ public class GroupJpaImplementation {
 	
 	public void addToSchedule(Long scheduleId, List<Long> groupIds){
 		final EntityManager manager = factory.createEntityManager();
-		Schedule schedule = scheduleImpl.findById(scheduleId);
+		ScheduledSms schedule = scheduleImpl.findById(scheduleId);
 		manager.getTransaction().begin();
-		for(Long groupId: groupIds) {
-			if(exists(groupId)) {
-				Group group = findById(groupId);
-				schedule.getGroups().add(group);
-				log.info("***** Added group "+group+" to "+schedule);
+		Set<Group> processedGroups = new HashSet<>();
+		if(schedule.getGroups() != null) {
+			for(Long groupId: groupIds) {
+				if(exists(groupId)) {
+					Group group = findById(groupId);
+					schedule.getGroups().add(group);
+					log.info("***** Added group "+group+" to "+schedule);
+				}
 			}
-		}
+		}else {
+			for(Long groupId: groupIds) {
+				if(exists(groupId)) {
+					Group group = findById(groupId);
+					processedGroups.add(group);
+					log.info("***** Added group "+group+" to "+schedule);
+				}
+			}
+			schedule.setGroups(processedGroups);
+		}		
 		manager.merge(schedule);
 		manager.getTransaction().commit();
 	}
 	
 	public ResponseEntity<Object> deleteFromSchedule(Long scheduleId, Long groupId){
 		final EntityManager manager = factory.createEntityManager();
-		Schedule schedule = scheduleImpl.findById(scheduleId);
+		ScheduledSms schedule = scheduleImpl.findById(scheduleId);
 		Group group = null;
 		manager.getTransaction().begin();
 		if(exists(groupId)) {
@@ -284,16 +310,16 @@ public class GroupJpaImplementation {
 		//initial month expenditure is zero
 		int monthExpenditure = 0;
 		//Query to get that months sms's between first and last dates
-		CriteriaQuery<ScheduleCost> query = builder.createQuery(ScheduleCost.class);
-		Root<ScheduleCost> root = query.from(ScheduleCost.class);
+		CriteriaQuery<ScheduledSmsCost> query = builder.createQuery(ScheduledSmsCost.class);
+		Root<ScheduledSmsCost> root = query.from(ScheduledSmsCost.class);
 		Path<Date> date = root.get("dateSent");
 		Predicate predicate = builder.between(date, firstDateOfMonth, lastDateOfMonth);
 		query.where(predicate);
-		List<ScheduleCost> perMonthScheduleList =  manager.createQuery(query).getResultList();
+		List<ScheduledSmsCost> perMonthScheduleList =  manager.createQuery(query).getResultList();
 		//if not expenses for that month calculate the total expenditure
 		if(perMonthScheduleList != null) {
-			for(ScheduleCost schedule : perMonthScheduleList) {
-				monthExpenditure = monthExpenditure + schedule.getCost().intValue();
+			for(ScheduledSmsCost schedule : perMonthScheduleList) {
+				monthExpenditure = monthExpenditure + schedule.getCost();
 			}
 		}
 		return monthExpenditure;

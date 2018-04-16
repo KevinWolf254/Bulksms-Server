@@ -160,7 +160,7 @@ public class ClientJpaImplementation {
 			}
 		}
 		String phoneNos = buffer.toString();
-		log.info("--Added phones No: "+phoneNos);
+		log.info("***** Added phones No: "+phoneNos);
 		return phoneNos;
 	}
 	

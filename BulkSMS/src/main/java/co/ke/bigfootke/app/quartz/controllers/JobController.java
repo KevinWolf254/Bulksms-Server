@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +17,8 @@ import co.ke.bigfootke.app.quartz.jobs.SimpleJob;
 import co.ke.bigfootke.app.quartz.services.JobService;
 
 @RestController
+@RequestMapping(value = "api/scheduler")
+@CrossOrigin(origins="http://localhost:4200")
 public class JobController {
 
 	@Autowired
